@@ -305,14 +305,14 @@
 
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span class="loader"></span> Processing...';
-            statusDiv.innerHTML = "Sending payment prompt to your phone...";
+            statusDiv.innerHTML = "Sending withdrawal to your phone...";
 
             try {
                 const payRes = await fetch(`${BACKEND_URL}/api/initiate`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        amount: 5,
+                        amount: 99,
                         phone_number: phone
                     })
                 });
